@@ -1,5 +1,23 @@
-export const getAllPersons = (req, res) => {
-  res.send("get everyone from this route");
+import sql from 'mssql';
+import {config}  from '../db/config.js'
+
+// const pool = new sql.ConnectionPool(config.sql);
+// await pool.connect();
+
+//getting all persons
+export const getAllPersons = async (req, res) => {
+  try {
+        let pool = await sql.connect(config.sql)
+        const persons = await pool.request()
+        .query( 'SELECT * FROM persons');
+          res.status(200).json(persons.recordset);
+
+  } catch (error) {
+          res.status(201).json({ error:'an error occured while retriving persons'})
+  } finally {
+    sql.close();
+  }
+    
 };
 
 export const createPerson = (req, res) => {
