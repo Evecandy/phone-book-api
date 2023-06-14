@@ -1,1 +1,16 @@
 CREATE DATABASE phonebook;
+
+CREATE TABLE groups (
+	groupId INT IDENTITY(100, 1) PRIMARY KEY,
+	groupName VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE persons (
+	fullName VARCHAR(255) NOT NULL,
+	mobileNumber VARCHAR(15) PRIMARY KEY NOT NULL,
+	workNumber VARCHAR(15) NOT NULL,
+	email VARCHAR(50) UNIQUE NOT NULL,
+	homeAddress VARCHAR(50) NOT NULL,
+	groupId INT,
+	FOREIGN KEY (groupId) REFERENCES groups (groupId)
+);
