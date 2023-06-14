@@ -14,3 +14,8 @@ CREATE TABLE persons (
 	groupId INT,
 	FOREIGN KEY (groupId) REFERENCES groups (groupId)
 );
+
+INSERT INTO groups VALUES ('Family');
+
+INSERT INTO persons VALUES ('Collins Crud', '1234567891', '1345782132', 'collinscrud@gmail.com', 'Alaska 123', 100);
+SELECT * FROM persons;
