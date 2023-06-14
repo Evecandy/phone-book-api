@@ -65,14 +65,57 @@ export const createPerson = async (req, res) => {
   }
 };
 
-export const getPerson = (req, res) => {
-  res.send("get a single person");
+export const getPerson = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let pool = await sql.connect(config.sql);
+    const result = await pool.request()
+        .input("id", sql.Int, id)
+        .query("select * from persons where id = @id");
+    !result.recordset[0] ? res.status(404).json({ message: 'user not found' }) :
+        res.status(200).json(result.recordset);
+} catch (error) {
+    // console.log(error);
+    res.status(500).json({ error: 'An error occurred while retrieving user' });
+} finally {
+    sql.close();
+}
+  
+};
+export const updatePerson = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fullName, mobileNumber, workNumber, email, homeAddress, groupId  } = req.body;
+    let pool = await sql.connect(config.sql);
+    await pool.request()
+      .input("id", sql.Int, id)
+      .input("fullName", sql.VarChar, fullName)
+            .input("mobileNumber", sql.VarChar, mobileNumber)
+            .input("workNumber", sql.VarChar, workNumber)
+            .input("email", sql.VarChar, email)
+            .input("homeAddress", sql.VarChar, homeAddress)
+            .input("groupId", sql.Int, groupId)
+        .query("UPDATE persons SET fullName = @fullName, mobileNumber = @mobileNumber, workNumber = @workNumber, email = @email where id = @id");
+        
+    res.status(200).json({ message: 'Todo updated successfully' });
+} catch (error) {
+    res.status(500).json({ error: 'An error occurred while updating the todo' });
+} finally {
+    sql.close();
+}
 };
 
-export const updatePerson = (req, res) => {
-  res.send("Update a single person here");
-};
 
-export const deletePerson = (req, res) => {
-  res.send("delete a person");
+
+export const  deletePerson = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await sql.connect(config.sql);
+    await sql.query`DELETE FROM persons WHERE id = ${id}`;
+    res.status(200).json({ message: 'user deleted successfully' });
+} catch (error) {
+    res.status(500).json({ error: 'An error occurred while deleting the user' });
+} finally {
+    sql.close();
+}
 };
