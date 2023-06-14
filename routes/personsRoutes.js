@@ -9,7 +9,7 @@ export const personsRoutes = (app) => {
   app.route("/persons").get(getAllPersons).post(createPerson);
 
   app
-    .route("/persons/:phonenumber")
+    .route("/persons/:id")
     .get(getPerson)
     .put(updatePerson)
     .delete(deletePerson);
