@@ -97,9 +97,9 @@ export const updatePerson = async (req, res) => {
             .input("groupId", sql.Int, groupId)
         .query("UPDATE persons SET fullName = @fullName, mobileNumber = @mobileNumber, workNumber = @workNumber, email = @email where id = @id");
         
-    res.status(200).json({ message: 'Todo updated successfully' });
+    res.status(200).json({ message: 'Persons details updated successfully' });
 } catch (error) {
-    res.status(500).json({ error: 'An error occurred while updating the todo' });
+    res.status(500).json({ error: 'An error occurred while updating persons details' });
 } finally {
     sql.close();
 }
