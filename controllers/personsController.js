@@ -134,7 +134,7 @@ export const updatePerson = async (req, res) => {
         
     res.status(200).json({ message: 'person details updated successfully' });
 } catch (error) {
-    res.status(500).json({ error: 'An error occurred while updating the details of this person' });
+    res.status(500).json({ error: 'An error occurred while updating the todo' });
 } finally {
     sql.close();
 }
