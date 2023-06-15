@@ -97,9 +97,9 @@ export const updatePerson = async (req, res) => {
             .input("groupId", sql.Int, groupId)
         .query("UPDATE persons SET fullName = @fullName, mobileNumber = @mobileNumber, workNumber = @workNumber, email = @email where id = @id");
         
-    res.status(200).json({ message: 'Todo updated successfully' });
+    res.status(200).json({ message: 'person details updated successfully' });
 } catch (error) {
-    res.status(500).json({ error: 'An error occurred while updating the todo' });
+    res.status(500).json({ error: 'An error occurred while updating the details of this person' });
 } finally {
     sql.close();
 }
@@ -112,9 +112,9 @@ export const  deletePerson = async (req, res) => {
     const { id } = req.params;
     await sql.connect(config.sql);
     await sql.query`DELETE FROM persons WHERE id = ${id}`;
-    res.status(200).json({ message: 'user deleted successfully' });
+    res.status(200).json({ message: 'person deleted successfully' });
 } catch (error) {
-    res.status(500).json({ error: 'An error occurred while deleting the user' });
+    res.status(500).json({ error: 'An error occurred while deleting the person' });
 } finally {
     sql.close();
 }
