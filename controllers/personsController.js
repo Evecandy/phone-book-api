@@ -17,6 +17,20 @@ export const getAllPersons = async (req, res) => {
   }
 };
 
+// getting all groups and their users
+export const getAllGroups = async (req, res) => {
+  try {
+    let pool = await sql.connect(config.sql);
+    const persons = await pool.request().query("select g.groupName,p.fullName, p.mobileNumber, p.email from persons p left join groups g on p.groupId = g.groupId order by groupName ");
+    res.status(200).json(persons.recordset);
+  } catch (error) {
+    res.status(201).json({ error: "an error occured while retriving groups" });
+  } finally {
+    sql.close();
+  }
+};
+
+
 const checkPhoneNumberExists = async (mobileNumber) => {
   // returns true if a number exists and false if it doesn't
   try {
@@ -65,6 +79,25 @@ export const createPerson = async (req, res) => {
   }
 };
 
+//getting a single group
+export const getGroup = async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    let pool = await sql.connect(config.sql);
+    const result = await pool.request()
+        .input("groupId", sql.Int, groupId)
+        .query("select g.groupName,p.fullName, p.mobileNumber, p.email from persons p left join groups g on p.groupId = g.groupId where g.groupId = @groupId");
+        !result.recordset[0] ? res.status(404).json({ message: 'group not found' }) :
+        res.status(200).json(result.recordset);
+} catch (error) {
+  res.status(500).json({ error: 'An error occurred while retrieving user' });
+} finally {
+    sql.close();
+}
+};
+
+
+//get a single person
 export const getPerson = async (req, res) => {
   try {
     const { id } = req.params;
@@ -82,6 +115,8 @@ export const getPerson = async (req, res) => {
 }
   
 };
+
+//update a single person
 export const updatePerson = async (req, res) => {
   try {
     const { id } = req.params;
@@ -97,24 +132,24 @@ export const updatePerson = async (req, res) => {
             .input("groupId", sql.Int, groupId)
         .query("UPDATE persons SET fullName = @fullName, mobileNumber = @mobileNumber, workNumber = @workNumber, email = @email where id = @id");
         
-    res.status(200).json({ message: 'Persons details updated successfully' });
+    res.status(200).json({ message: 'person details updated successfully' });
 } catch (error) {
-    res.status(500).json({ error: 'An error occurred while updating persons details' });
+    res.status(500).json({ error: 'An error occurred while updating the todo' });
 } finally {
     sql.close();
 }
 };
 
 
-
+//delete a single person
 export const  deletePerson = async (req, res) => {
   try {
     const { id } = req.params;
     await sql.connect(config.sql);
     await sql.query`DELETE FROM persons WHERE id = ${id}`;
-    res.status(200).json({ message: 'user deleted successfully' });
+    res.status(200).json({ message: 'person deleted successfully' });
 } catch (error) {
-    res.status(500).json({ error: 'An error occurred while deleting the user' });
+    res.status(500).json({ error: 'An error occurred while deleting the person' });
 } finally {
     sql.close();
 }
